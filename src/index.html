@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIW WeatherMap</title>
     <link rel="stylesheet" href="css/reset.css">
+    <link href="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/css/halfmoon-variables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -13,19 +15,65 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
         crossorigin=""></script>
+
 </head>
 
-<body>
-    <header>
-        <span>Titre</span>
-        <span>Logo</span>
-    </header>
+<body class="with-custom-webkit-scrollbars with-custom-css-scrollbars" data-set-preferred-mode-onload="true">
 
-    <div id="map">
+    <div id="app" class="page-wrapper with-navbar with-sidebar" data-sidebar-shortcut-enabled="true">
 
+        <nav class="navbar bg-primary-lm justify-content-between">
+            <div class="navbar-content">
+                <button id="toggle-sidebar-btn" class="btn btn-action" type="button" @click="toggleSidebar">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="navbar-content">
+                <span class="font-size-16 navbar-brand text-uppercase text-white-lm">
+                    MIW WheatherMap
+                </span>
+            </div>
+
+            <div class="navbar-content">
+                <button class="btn btn-action" type="button" @click="toggleDarkMode" aria-label="Activer le dark mode">
+                    <i class="fa fa-moon-o" aria-hidden="true"></i>
+                </button>
+            </div>
+        </nav>
+
+
+        <div class="sidebar">
+            <div class="sidebar-menu">
+                <h5 class="sidebar-title">Rechercher</h5>
+                <div class="input-group px-10">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input v-model="search" type="text" class="form-control" placeholder="zone géographique">
+                </div>
+            </div>
+            <div class="sidebar-menu list">
+                <h5 class="sidebar-title">
+                    Resultat
+                </h5>
+                <div class="sidebar-divider">
+                    <span v-for="ville in villeResult" class="sidebar-link">{{ ville }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div id="map"></div>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <script src="../dist/main.js"></script>
 </body>
 
-<script src="../dist/main.js"></script>
+
 
 </html>
