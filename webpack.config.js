@@ -10,7 +10,7 @@ const path = require("path");
  * -> npm run watch
  *
  * prochaine utlisation :
- * -> run watch
+ * -> npm run watch
  */
 
 let config = {
