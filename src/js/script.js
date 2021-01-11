@@ -4,6 +4,10 @@ var app = new Vue({
     search: "",
     villeResult: ["Paris", "Lyon", "Grenoble"],
     refreshToken: "5ff42209e96a29259352e9e5|23970a20e1d8ff67d5b4f7bc06069383",
+    centerMap: [51.505, -0.09],
+    map: undefined,
+    markers: [],
+    stationSelected: {},
   },
   methods: {
     toggleSidebar: function () {
@@ -46,17 +50,69 @@ var app = new Vue({
       let rep = await req.json();
       await localStorage.setItem("access_token", rep.access_token);
     },
+    getStations: async function () {
+      localStorage.setItem("centerMap", [
+        this.map.getCenter().lat,
+        this.map.getCenter().lng,
+      ]);
+
+      var myHeaders = new Headers();
+      myHeaders.append(
+        "Authorization",
+        "Bearer " + localStorage.getItem("access_token")
+      );
+
+      let url = new URL("https://app.netatmo.net/api/getpublicmeasures");
+
+      url.search = new URLSearchParams({
+        limit: 100,
+        zoom: this.map.getZoom(),
+        lat_ne: this.map.getBounds()._northEast.lat,
+        lon_ne: this.map.getBounds()._northEast.lng,
+        lat_sw: this.map.getBounds()._southWest.lat,
+        lon_sw: this.map.getBounds()._southWest.lng,
+        date_end: "last",
+        quality: 7,
+      });
+
+      var requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+
+      let req = await fetch(url, requestOptions);
+      let rep = await req.json();
+      await this.markers.map((marker) => this.map.removeLayer(marker)); // remove all markers
+      await rep.body.map((station) => this.displayMarker(station)); // display new markers
+    },
+    displayMarker: function (station) {
+      let marker = L.marker([
+        station.place.location[1],
+        station.place.location[0],
+      ]).addTo(this.map);
+      this.markers.push(marker);
+    },
   },
   mounted: function () {
-    this.villeResult.map((v) => console.log(v));
+    this.map = L.map("map").setView(this.centerMap, 13);
+
+    L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+      attribution: "",
+    }).addTo(this.map);
+
+    this.map.on("moveend", () => {
+      this.getStations();
+    });
+
     if (!localStorage.getItem("access_token")) {
       this.updateAccessToken();
     }
+
+    if (localStorage.getItem("centerMap")) {
+      this.centerMap = localStorage.getItem("centerMap");
+    }
+
+    this.getStations();
   },
 });
-
-var map = L.map("map").setView([51.505, -0.09], 13);
-
-L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-  attribution: "",
-}).addTo(map);
