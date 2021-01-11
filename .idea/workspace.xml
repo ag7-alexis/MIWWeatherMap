@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="115824ac-f36b-4783-a516-2656cd060109" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +25,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -34,11 +36,20 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1609836160845</updated>
-      <workItem from="1609836164596" duration="959000" />
+      <workItem from="1609836164596" duration="2143000" />
+      <workItem from="1609949701432" duration="151000" />
+      <workItem from="1610008138214" duration="430000" />
+      <workItem from="1610366390559" duration="957000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="589" y="298" key="FileChooserDialogImpl" timestamp="1610008564172">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="589" y="298" key="FileChooserDialogImpl/0.1080.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1610008564172" />
   </component>
 </project>
