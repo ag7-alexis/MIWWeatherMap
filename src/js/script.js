@@ -2,7 +2,7 @@ var app = new Vue({
   el: "#app",
   data: {
     search: "",
-    villeResult: ["Paris", "Lyon", "Grenoble"],
+    villeResult: ["nice"],
     refreshToken: "5ff42209e96a29259352e9e5|23970a20e1d8ff67d5b4f7bc06069383",
   },
   methods: {
@@ -46,6 +46,18 @@ var app = new Vue({
       let rep = await req.json();
       await localStorage.setItem("access_token", rep.access_token);
     },
+
+    autocomplete: async function(){
+
+      let req = await fetch('https://nominatim.openstreetmap.org/search.php?street='+this.search+'&format=json');
+
+          let rep = await req.json();
+
+          await rep.map((place)=>{
+            console.log(place.display_name)
+          })
+
+    }
   },
   mounted: function () {
     this.villeResult.map((v) => console.log(v));

@@ -50,7 +50,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text"><i class="fa fa-search"></i></span>
                     </div>
-                    <input v-model="search" type="text" class="form-control" placeholder="zone géographique">
+                    <input v-model="search" v-on:keyup="autocomplete" type="text" class="form-control" placeholder="zone géographique">
                 </div>
             </div>
             <div class="sidebar-menu list">
