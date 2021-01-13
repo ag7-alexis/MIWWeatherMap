@@ -5,11 +5,15 @@ var app = new Vue({
     villeResult: ["nice"],
     refreshToken: "5ff42209e96a29259352e9e5|23970a20e1d8ff67d5b4f7bc06069383",
     centerMap: [51.505, -0.09],
+    zoomMap: 10,
     map: undefined,
     markers: [],
     stationSelected: {},
   },
   methods: {
+    /**
+     * halfmoon - display or hidde sidebar
+     */
     toggleSidebar: function () {
       let pageWrapper = document.getElementsByClassName("page-wrapper")[0];
       if (pageWrapper) {
@@ -20,14 +24,20 @@ var app = new Vue({
         }
       }
     },
+    /**
+     * halfmoon - light or dark theme
+     */
     toggleDarkMode: function () {
       halfmoon.toggleDarkMode();
     },
+    /**
+     * Get access_token from netnamo api
+     */
     updateAccessToken: async function () {
-      var myHeaders = new Headers();
+      let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-      var urlencoded = new URLSearchParams();
+      let urlencoded = new URLSearchParams();
       urlencoded.append("grant_type", "refresh_token");
       urlencoded.append("refresh_token", this.refreshToken);
       urlencoded.append("client_id", "5ff42c27aa535449705e170e");
@@ -36,7 +46,7 @@ var app = new Vue({
         "LoGATpdHCIsYi2eCpk5BMqiQlRmtGQHfdAiCR9AorFFI"
       );
 
-      var requestOptions = {
+      let requestOptions = {
         method: "POST",
         headers: myHeaders,
         body: urlencoded,
@@ -50,13 +60,11 @@ var app = new Vue({
       let rep = await req.json();
       await localStorage.setItem("access_token", rep.access_token);
     },
+    /**
+     * Function to get data from all stations display on the map
+     */
     getStations: async function () {
-      localStorage.setItem("centerMap", [
-        this.map.getCenter().lat,
-        this.map.getCenter().lng,
-      ]);
-
-      var myHeaders = new Headers();
+      let myHeaders = new Headers();
       myHeaders.append(
         "Authorization",
         "Bearer " + localStorage.getItem("access_token")
@@ -65,7 +73,8 @@ var app = new Vue({
       let url = new URL("https://app.netatmo.net/api/getpublicmeasures");
 
       url.search = new URLSearchParams({
-        limit: 100,
+        limit: this.map.getZoom() > 7 ? (this.map.getZoom() > 10 ? 3 : 2) : 1,
+        divider: this.map.getZoom() > 7 ? (this.map.getZoom() > 10 ? 3 : 5) : 8,
         zoom: this.map.getZoom(),
         lat_ne: this.map.getBounds()._northEast.lat,
         lon_ne: this.map.getBounds()._northEast.lng,
@@ -75,17 +84,27 @@ var app = new Vue({
         quality: 7,
       });
 
-      var requestOptions = {
+      let requestOptions = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
       };
 
       let req = await fetch(url, requestOptions);
+      // if token_access expired, get a new one and recall function
+      if (req.status === 403) {
+        this.updateAccessToken();
+        return this.getStations();
+      }
       let rep = await req.json();
       await this.markers.map((marker) => this.map.removeLayer(marker)); // remove all markers
-      await rep.body.map((station) => this.displayMarker(station)); // display new markers
+      this.markers = [];
+      rep.body.map((station) => this.displayMarker(station)); // display new markers
     },
+    /**
+     * function to add a marker on the map
+     * @param {Object} station
+     */
     displayMarker: function (station) {
       let marker = L.marker([
         station.place.location[1],
@@ -93,35 +112,53 @@ var app = new Vue({
       ]).addTo(this.map);
       this.markers.push(marker);
     },
-    autocomplete: async function(){
+    autocomplete: async function () {
+      let req = await fetch(
+        "https://nominatim.openstreetmap.org/search.php?street=" +
+          this.search +
+          "&format=json"
+      );
 
-      let req = await fetch('https://nominatim.openstreetmap.org/search.php?street='+this.search+'&format=json');
+      let rep = await req.json();
 
-          let rep = await req.json();
-
-          await rep.map((place)=>{
-            console.log(place.display_name)
-          })
-
-    }
+      await rep.map((place) => {
+        console.log(place.display_name);
+      });
+    },
   },
+  /**
+   * Function call when page init
+   */
   mounted: function () {
-    this.map = L.map("map").setView(this.centerMap, 13);
+    // get last map position from localStorage
+    if (localStorage.getItem("centerMap"))
+      this.centerMap = localStorage.getItem("centerMap").split(",");
 
+    // get last map zoom from localStorage
+    if (localStorage.getItem("zoomMap"))
+      this.zoomMap = localStorage.getItem("zoomMap");
+
+    // init map
+    this.map = L.map("map").setView(this.centerMap, this.zoomMap);
     L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
       attribution: "",
+      minNativeZoom: 4,
+      minZoom: 4,
     }).addTo(this.map);
 
+    // add eventListener on the map movment
     this.map.on("moveend", () => {
       this.getStations();
+      // update localStorage
+      localStorage.setItem("centerMap", [
+        this.map.getCenter().lat,
+        this.map.getCenter().lng,
+      ]);
+      localStorage.setItem("zoomMap", this.map.getZoom());
     });
 
     if (!localStorage.getItem("access_token")) {
       this.updateAccessToken();
-    }
-
-    if (localStorage.getItem("centerMap")) {
-      this.centerMap = localStorage.getItem("centerMap");
     }
 
     this.getStations();
