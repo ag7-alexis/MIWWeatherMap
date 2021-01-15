@@ -93,19 +93,16 @@ var app = new Vue({
       ]).addTo(this.map);
       this.markers.push(marker);
     },
+    // searching by adress function
     autocomplete: async function(){
-
-      window.setTimeout(async function(){
+      this.villeResult = []; // address array re init
         let req = await fetch('https://nominatim.openstreetmap.org/search.php?street='+this.search+'&limit=10&format=json');
         let rep = await req.json();
 
         await rep.map((place)=>{
+          this.villeResult.push(place.display_name); // add into villeResult array the name of the address
 
-          // console.log(place.display_name)
-          this.villeResult.push(place.display_name)
-
-        })},1000)
-
+        });
     }
   },
   mounted: function () {
