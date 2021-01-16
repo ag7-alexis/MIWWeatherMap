@@ -1,4 +1,4 @@
-import Vue from "vue/dist/vue.esm";
+// import Vue from "vue/dist/vue.esm"; désactiver en mode dev
 import debounce from "lodash/debounce";
 
 var app = new Vue({
@@ -148,7 +148,7 @@ var app = new Vue({
 
     // init map
     this.map = L.map("map").setView(this.centerMap, this.zoomMap);
-    L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://{s}.tile.osm.org/{z}/{x}/{y}.png", {
       attribution: "",
       minNativeZoom: 4,
       minZoom: 4,
