@@ -27,6 +27,7 @@ var app = new Vue({
       dark: [
         "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
         {
+          api_key: "7af44514-d90c-4d8b-beca-a09c1588d84c",
           attribution: "",
           minNativeZoom: 4,
           minZoom: 4,
