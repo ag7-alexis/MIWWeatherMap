@@ -25,9 +25,10 @@ var app = new Vue({
         },
       ],
       dark: [
-        "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+        "https://{s}.tile.jawg.io/jawg-dark/{z}/{x}/{y}{r}.png?access-token={accessToken}",
         {
-          api_key: "7af44514-d90c-4d8b-beca-a09c1588d84c",
+          accessToken:
+            "egxKGnlc7KKhVoPWDwK8F1kMy3SbJUJRYTPnXLy8DxEagNuoQ4WBdBbLO2BqAGa7",
           attribution: "",
           minNativeZoom: 4,
           minZoom: 4,
