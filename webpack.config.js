@@ -16,7 +16,7 @@ const path = require("path");
 let config = {
   entry: "./src/js/script.js",
   output: {
-    path: path.resolve(__dirname, "./dist"),
+    path: path.resolve(__dirname, "./js"),
     filename: "./main.js",
   },
   module: {

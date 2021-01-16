@@ -1,3 +1,5 @@
+// import Vue from "https://cdn.jsdelivr.net/npm/vue@2.6.0/dist/vue.esm.browser.js";
+
 var app = new Vue({
   el: "#app",
   data: {
@@ -113,16 +115,20 @@ var app = new Vue({
       this.markers.push(marker);
     },
     /**
-    * searching by adress function
-    */
-    autocomplete: async function(){
+     * searching by adress function
+     */
+    autocomplete: async function () {
       this.villeResult = []; // address array re init
-        let req = await fetch('https://nominatim.openstreetmap.org/search.php?street='+this.search+'&limit=10&format=json');
-        let rep = await req.json();
+      let req = await fetch(
+        "https://nominatim.openstreetmap.org/search.php?street=" +
+          this.search +
+          "&limit=10&format=json"
+      );
+      let rep = await req.json();
 
-        await rep.map((place)=>{
-          this.villeResult.push(place.display_name); // add into villeResult array the name of the address
-        });
+      await rep.map((place) => {
+        this.villeResult.push(place.display_name); // add into villeResult array the name of the address
+      });
     },
   },
   /**
