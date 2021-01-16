@@ -13,6 +13,26 @@ var app = new Vue({
     markers: [],
     stationSelected: {},
     searchAbort: undefined,
+    currentTiles: undefined,
+    currentMapMode: "light",
+    mapTiles: {
+      light: [
+        "https://{s}.tile.osm.org/{z}/{x}/{y}.png",
+        {
+          attribution: "",
+          minNativeZoom: 4,
+          minZoom: 4,
+        },
+      ],
+      dark: [
+        "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+        {
+          attribution: "",
+          minNativeZoom: 4,
+          minZoom: 4,
+        },
+      ],
+    },
   },
   methods: {
     /**
@@ -33,6 +53,24 @@ var app = new Vue({
      */
     toggleDarkMode: function () {
       halfmoon.toggleDarkMode();
+    },
+    /**
+     * Function to get light or dark map
+     */
+    toggleDarkMap: function () {
+      localStorage.setItem(
+        "mapTiles",
+        this.currentMapMode == "light" ? "dark" : "light"
+      );
+
+      localStorage.getItem("mapTiles") &&
+        (this.currentMapMode = localStorage.getItem("mapTiles"));
+      this.map.removeLayer(this.currentTiles);
+
+      this.currentTiles = L.tileLayer(
+        this.mapTiles[this.currentMapMode][0],
+        this.mapTiles[this.currentMapMode][1]
+      ).addTo(this.map);
     },
     /**
      * Get access_token from netnamo api
@@ -139,20 +177,24 @@ var app = new Vue({
    */
   mounted: function () {
     // get last map position from localStorage
-    if (localStorage.getItem("centerMap"))
-      this.centerMap = localStorage.getItem("centerMap").split(",");
+    localStorage.getItem("centerMap") &&
+      (this.centerMap = localStorage.getItem("centerMap").split(","));
 
     // get last map zoom from localStorage
-    if (localStorage.getItem("zoomMap"))
-      this.zoomMap = localStorage.getItem("zoomMap");
+    localStorage.getItem("zoomMap") &&
+      (this.zoomMap = localStorage.getItem("zoomMap"));
 
     // init map
     this.map = L.map("map").setView(this.centerMap, this.zoomMap);
-    L.tileLayer("https://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-      attribution: "",
-      minNativeZoom: 4,
-      minZoom: 4,
-    }).addTo(this.map);
+
+    // get map tiles from localStorage
+    localStorage.getItem("mapTiles") &&
+      (this.currentMapMode = localStorage.getItem("mapTiles"));
+
+    this.currentTiles = L.tileLayer(
+      this.mapTiles[this.currentMapMode][0],
+      this.mapTiles[this.currentMapMode][1]
+    ).addTo(this.map);
 
     document
       .getElementById("autocomplete")

@@ -43,9 +43,25 @@
             </div>
 
             <div class="navbar-content">
-                <button class="btn btn-action" type="button" @click="toggleDarkMode" aria-label="Activer le dark mode">
-                    <i class="fa fa-moon-o" aria-hidden="true"></i>
-                </button>
+                <div class="dropdown with-arrow">
+                    <button class="btn" data-toggle="dropdown" type="button" id="..." aria-haspopup="true"
+                        aria-expanded="false">
+                        Paramètres <i class="fa fa-angle-down ml-5" aria-hidden="true"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="...">
+                        <span class="dropdown-item text-center">Thème sombre</span>
+                        <div class="dropdown-content text-center">
+                            <button type="button" @click="toggleDarkMode" aria-label="Activer le dark mode"
+                                class="btn btn-action"><i aria-hidden="true" class="fa fa-moon-o"></i></button>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item text-center">Map sombre</span>
+                        <div class="dropdown-content text-center">
+                            <button type="button" @click="toggleDarkMap" aria-label="Activer le dark mode"
+                                class="btn btn-action"><i aria-hidden="true" class="fa fa-map-marker"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </nav>
 
@@ -64,15 +80,15 @@
                 <h5 class="sidebar-title">
                     Resultat
                 </h5>
-                <div class="sidebar-divider">
-                    <div class="overflow-x-hidden mh-500 overflow-y-scroll">
-                        <span v-for="ville in villeResult" class="sidebar-link px-5">{{ ville }}</span>
-                    </div>
+                <div class="sidebar-divider"></div>
+                <div class="overflow-x-hidden mh-500 overflow-y-scroll">
+                    <span v-for="ville in villeResult" class="sidebar-link px-5 pl-10">{{ ville }}</span>
                 </div>
+
             </div>
         </div>
 
-        <div class="content-wrapper">
+        <div class="content-wrapper z-0">
             <div id="map"></div>
         </div>
     </div>
