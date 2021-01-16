@@ -2,7 +2,7 @@ var app = new Vue({
   el: "#app",
   data: {
     search: "",
-    villeResult: ["nice"],
+    villeResult: [],
     refreshToken: "5ff42209e96a29259352e9e5|23970a20e1d8ff67d5b4f7bc06069383",
     centerMap: [51.505, -0.09],
     zoomMap: 10,
@@ -112,18 +112,17 @@ var app = new Vue({
       ]).addTo(this.map);
       this.markers.push(marker);
     },
-    autocomplete: async function () {
-      let req = await fetch(
-        "https://nominatim.openstreetmap.org/search.php?street=" +
-          this.search +
-          "&format=json"
-      );
+    /**
+    * searching by adress function
+    */
+    autocomplete: async function(){
+      this.villeResult = []; // address array re init
+        let req = await fetch('https://nominatim.openstreetmap.org/search.php?street='+this.search+'&limit=10&format=json');
+        let rep = await req.json();
 
-      let rep = await req.json();
-
-      await rep.map((place) => {
-        console.log(place.display_name);
-      });
+        await rep.map((place)=>{
+          this.villeResult.push(place.display_name); // add into villeResult array the name of the address
+        });
     },
   },
   /**
