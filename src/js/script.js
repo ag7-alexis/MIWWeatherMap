@@ -1,4 +1,5 @@
 import Vue from "vue/dist/vue.esm";
+import debounce from "lodash/debounce";
 
 var app = new Vue({
   el: "#app",
@@ -11,6 +12,7 @@ var app = new Vue({
     map: undefined,
     markers: [],
     stationSelected: {},
+    searchAbort: undefined,
   },
   methods: {
     /**
@@ -119,13 +121,14 @@ var app = new Vue({
      */
     autocomplete: async function () {
       this.villeResult = []; // address array re init
-      let req = await fetch(
-        "https://nominatim.openstreetmap.org/search.php?street=" +
-          this.search +
-          "&limit=10&format=json"
-      );
+      let url = new URL("https://nominatim.openstreetmap.org/search.php");
+      url.search = new URLSearchParams({
+        street: this.search,
+        limit: 10,
+        format: "json",
+      });
+      let req = await fetch(url);
       let rep = await req.json();
-
       await rep.map((place) => {
         this.villeResult.push(place.display_name); // add into villeResult array the name of the address
       });
@@ -150,6 +153,10 @@ var app = new Vue({
       minNativeZoom: 4,
       minZoom: 4,
     }).addTo(this.map);
+
+    document
+      .getElementById("autocomplete")
+      .addEventListener("keyup", debounce(this.autocomplete, 750));
 
     // add eventListener on the map movment
     this.map.on("moveend", () => {
