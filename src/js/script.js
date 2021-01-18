@@ -35,6 +35,39 @@ var app = new Vue({
         },
       ],
     },
+    stations: [],
+  },
+  computed: {
+    /**
+     * Properties computed to get current average temperature of the zone
+     */
+    averageTemp: function () {
+      let average = 0;
+      this.stations.map((station, i) => {
+        average +=
+          station.measures[Object.keys(station.measures)[0]].res[
+            Object.keys(
+              station.measures[Object.keys(station.measures)[0]].res
+            )[0]
+          ][0];
+      });
+      return average / this.stations.length;
+    },
+    /**
+     * Properties computed to get current average humidity of the zone
+     */
+    averageHumid: function () {
+      let average = 0;
+      this.stations.map((station, i) => {
+        average +=
+          station.measures[Object.keys(station.measures)[0]].res[
+            Object.keys(
+              station.measures[Object.keys(station.measures)[0]].res
+            )[0]
+          ][1];
+      });
+      return average / this.stations.length;
+    },
   },
   methods: {
     /**
@@ -143,6 +176,7 @@ var app = new Vue({
       let rep = await req.json();
       await this.markers.map((marker) => this.map.removeLayer(marker)); // remove all markers
       this.markers = [];
+      this.stations = rep.body;
       rep.body.map((station) => this.displayMarker(station)); // display new markers
     },
     /**
@@ -150,10 +184,30 @@ var app = new Vue({
      * @param {Object} station
      */
     displayMarker: function (station) {
-      let marker = L.marker([
-        station.place.location[1],
-        station.place.location[0],
-      ]).addTo(this.map);
+      let temp = Math.floor(
+        station.measures[Object.keys(station.measures)[0]].res[
+          Object.keys(station.measures[Object.keys(station.measures)[0]].res)[0]
+        ][0]
+      );
+      let color = temp >= 15 ? "red" : temp <= 0 ? "" : "green";
+      let icon = L.divIcon({
+        className: "custom-div-icon",
+        html:
+          "<div class='marker-pin " +
+          color +
+          "'></div><span class='text-dark'>" +
+          temp +
+          "</span>",
+        iconSize: [30, 42],
+        iconAnchor: [15, 42],
+      });
+
+      let marker = L.marker(
+        [station.place.location[1], station.place.location[0]],
+        {
+          icon: icon,
+        }
+      ).addTo(this.map);
       this.markers.push(marker);
     },
     /**

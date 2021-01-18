@@ -22,12 +22,64 @@
         .mh-500 {
             max-height: 50rem !important;
         }
+
+        .leaflet-control-attribution {
+            display: none;
+        }
+
+        .z-500 {
+            z-index: 500;
+        }
+
+
+        .marker-pin {
+            width: 30px;
+            height: 30px;
+            border-radius: 50% 50% 50% 0;
+            background: var(--primary-color);
+            position: absolute;
+            transform: rotate(-45deg);
+            left: 50%;
+            top: 50%;
+            margin: -15px 0 0 -15px;
+        }
+
+        .marker-pin::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            margin: 3px 0 0 3px;
+            background: #fff;
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .custom-div-icon span {
+            position: absolute;
+            width: 22px;
+            font-size: 22px;
+            left: 0;
+            right: 0;
+            margin: 10px auto;
+            text-align: center;
+            margin: 12px auto;
+            font-size: 13px;
+        }
+
+        .green {
+            background: var(--success-color);
+        }
+
+        .red {
+            background: var(--danger-color);
+        }
     </style>
 </head>
 
 <body class="with-custom-webkit-scrollbars with-custom-css-scrollbars" data-set-preferred-mode-onload="true">
 
-    <div id="app" class="page-wrapper with-navbar with-sidebar" data-sidebar-shortcut-enabled="true">
+    <div id="app" class="page-wrapper with-navbar with-sidebar" data-sidebar-shortcut-enabled="true"
+        data-sidebar-hidden="hidden">
 
         <nav class="navbar bg-primary-lm justify-content-between">
             <div class="navbar-content">
@@ -46,7 +98,7 @@
                 <div class="dropdown with-arrow">
                     <button class="btn" data-toggle="dropdown" type="button" id="..." aria-haspopup="true"
                         aria-expanded="false">
-                        Paramètres <i class="fa fa-angle-down ml-5" aria-hidden="true"></i>
+                        <i class="fa fa-cog"></i> <i class="fa fa-angle-down ml-5" aria-hidden="true"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="...">
                         <span class="dropdown-item text-center">Thème sombre</span>
@@ -88,8 +140,13 @@
             </div>
         </div>
 
-        <div class="content-wrapper z-0">
+        <div class="content-wrapper position-relative z-0">
             <div id="map"></div>
+            <div class="alert position-absolute bottom-0 right-0 z-500" role="alert">
+                <h4 class="alert-heading">Données moyen pour la zone</h4>
+                température : {{ parseFloat(averageTemp).toFixed(2) }} humidité : {{ parseFloat(averageHumid).toFixed(2)
+                }}%
+            </div>
         </div>
     </div>
 
