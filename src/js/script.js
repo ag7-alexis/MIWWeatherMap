@@ -37,6 +37,40 @@ var app = new Vue({
             ],
         },
     },
+    stations: [],
+  },
+  computed: {
+    /**
+     * Properties computed to get current average temperature of the zone
+     */
+    averageTemp: function () {
+      let average = 0;
+      this.stations.map((station, i) => {
+        average +=
+          station.measures[Object.keys(station.measures)[0]].res[
+            Object.keys(
+              station.measures[Object.keys(station.measures)[0]].res
+            )[0]
+          ][0];
+      });
+      return average / this.stations.length;
+    },
+    /**
+     * Properties computed to get current average humidity of the zone
+     */
+    averageHumid: function () {
+      let average = 0;
+      this.stations.map((station, i) => {
+        average +=
+          station.measures[Object.keys(station.measures)[0]].res[
+            Object.keys(
+              station.measures[Object.keys(station.measures)[0]].res
+            )[0]
+          ][1];
+      });
+      return average / this.stations.length;
+    },
+  },
     methods: {
         /**
          * halfmoon - display or hidde sidebar
@@ -147,16 +181,40 @@ var app = new Vue({
             rep.body.map((station) => this.displayMarker(station)); // display new markers
         },
         /**
-         * function to add a marker on the map
-         * @param {Object} station
-         */
-        displayMarker: function (station) {
-            let marker = L.marker([
-                station.place.location[1],
-                station.place.location[0],
-            ]).addTo(this.map);
-            this.markers.push(marker);
-        },
+     * function to add a marker on the map
+     * @param {Object} station
+     */
+    displayMarker: function (station) {
+      let temp = Math.floor(
+        station.measures[Object.keys(station.measures)[0]].res[
+          Object.keys(station.measures[Object.keys(station.measures)[0]].res)[0]
+        ][0]
+      );
+      let color = temp >= 15 ? "red" : temp <= 0 ? "" : "green";
+      let icon = L.divIcon({
+        className: "custom-div-icon",
+        html:
+          "<div class='marker-pin " +
+          color +
+          "'></div><span class='text-dark'>" +
+          temp +
+          "</span>",
+        iconSize: [30, 42],
+        iconAnchor: [15, 42],
+      });
+
+      let marker = L.marker(
+        [station.place.location[1], station.place.location[0]],
+        {
+          icon: icon,
+        }
+      )
+        .addTo(this.map)
+        .on("click", () => {
+          halfmoon.toggleModal("modal-station");
+        }); //
+      this.markers.push(marker);
+    },
         /**
          * searching by adress function
          */
@@ -190,7 +248,6 @@ var app = new Vue({
             })
             let marker = L.marker([ville.lat, ville.lon], {icon: icon}).addTo(this.map)
             this.selectedMarkers.push(marker);
-
         }
     },
     /**
@@ -237,5 +294,6 @@ var app = new Vue({
         }
 
         this.getStations();
+
     },
 });
