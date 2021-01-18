@@ -11,6 +11,7 @@ var app = new Vue({
     zoomMap: 10,
     map: undefined,
     markers: [],
+    selectedMarkers: [],
     stationSelected: {},
     searchAbort: undefined,
     currentTiles: undefined,
@@ -228,8 +229,32 @@ var app = new Vue({
       let req = await fetch(url);
       let rep = await req.json();
       await rep.map((place) => {
-        this.villeResult.push(place.display_name); // add into villeResult array the name of the address
+        this.villeResult.push({
+          display_name: place.display_name,
+          lat: place.lat,
+          lon: place.lon,
+        }); // add into villeResult array an object
       });
+    },
+    /**
+     * move to the address in the map and add marker
+     * @param {object} Ville
+     */
+    moveToAddress: function (ville) {
+      // Add marker at the address Selectionned (click)
+
+      this.map.flyTo([ville.lat, ville.lon], 16);
+      let icon = L.divIcon({
+        className: "custom-div-icon",
+        html:
+          "<div class='selected-marker-pin'></div><span class='text-dark'>ici</span>",
+        iconSize: [40, 42],
+        iconAnchor: [15, 42],
+      });
+      let marker = L.marker([ville.lat, ville.lon], { icon: icon }).addTo(
+        this.map
+      );
+      this.selectedMarkers.push(marker);
     },
   },
   /**
