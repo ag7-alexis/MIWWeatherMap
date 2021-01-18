@@ -207,7 +207,11 @@ var app = new Vue({
         {
           icon: icon,
         }
-      ).addTo(this.map);
+      )
+        .addTo(this.map)
+        .on("click", () => {
+          halfmoon.toggleModal("modal-station");
+        }); //
       this.markers.push(marker);
     },
     /**
