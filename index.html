@@ -37,6 +37,37 @@
             height: 30px;
             border-radius: 50% 50% 50% 0;
             background: var(--primary-color);
+          
+        .custom-div-icon span {
+            position: absolute;
+            width: 22px;
+            font-size: 22px;
+            left: 0;
+            right: 0;
+            margin: 10px auto;
+            text-align: center;
+            margin: 12px auto;
+            font-size: 13px;
+        }
+
+        .selected-marker-pin::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            margin: 3px 0 0 3px;
+            background: #fff;
+            position: absolute;
+            border-radius: 50%;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .selected-marker-pin {
+            width: 30px;
+            height: 30px;
+            border-radius: 50% 50% 50% 0;
+            background: lightcoral;
             position: absolute;
             transform: rotate(-45deg);
             left: 50%;
@@ -73,6 +104,23 @@
         .red {
             background: var(--danger-color);
         }
+
+        body:not(.dark-mode) span.sidebar-link:hover {
+            background-color: lightgray;
+            opacity: 80%;
+            cursor:pointer;
+            border-radius: 15px;
+        }
+
+
+        .dark-mode span.sidebar-link:hover {
+            background-color: red;
+            opacity: 80%;
+            cursor:pointer;
+            border-radius: 15px;
+        }
+
+
     </style>
 </head>
 
@@ -134,7 +182,7 @@
                 </h5>
                 <div class="sidebar-divider"></div>
                 <div class="overflow-x-hidden mh-500 overflow-y-scroll">
-                    <span v-for="ville in villeResult" class="sidebar-link px-5 pl-10">{{ ville }}</span>
+                    <span v-for="ville in villeResult" v-on:click="moveToAddress(ville)" class="sidebar-link px-5 pl-10">{{ ville.display_name }}</span>
                 </div>
 
             </div>
