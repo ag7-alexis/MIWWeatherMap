@@ -1,4 +1,4 @@
-// import Vue from "vue/dist/vue.esm"; désactiver en mode dev
+import Vue from "vue/dist/vue.esm";
 import debounce from "lodash/debounce";
 
 var app = new Vue({
@@ -256,7 +256,8 @@ var app = new Vue({
       let req = await fetch(url);
       let rep = await req.json();
       await rep.map((place) => {
-        this.villeResult.push({ // add into villeResult array an object
+        this.villeResult.push({
+          // add into villeResult array an object
           display_name: place.display_name,
           lat: place.lat,
           lon: place.lon,
@@ -283,18 +284,20 @@ var app = new Vue({
         this.map
       );
       // remove all markers of the map
-      await this.selectedMarkers.map((marker)=>{
+      await this.selectedMarkers.map((marker) => {
         this.map.removeLayer(marker);
       });
-      this.selectedMarkers = []
+      this.selectedMarkers = [];
       await this.selectedMarkers.push(marker); // add new marker on the map and inside the selectedMarkers array
       // Test the device
-      let isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
-      if(isMobile){
+
+      if (window.matchMedia("only screen and (max-width: 768px)").matches) {
         // if device < 768px
         // add attribute ("data-sidebar-hidden", "hidden") to hide the sidebar
-        let pageWrapper = document.getElementsByClassName("page-wrapper")[0];
-        pageWrapper.setAttribute("data-sidebar-hidden", "hidden");
+        document
+          .getElementsByClassName("page-wrapper")[0]
+          .setAttribute("data-sidebar-hidden", "hidden");
+        localStorage.setItem("sidebarOpen", false);
       }
     },
   },
