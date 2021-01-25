@@ -185,29 +185,66 @@
             <div id="map"></div>
             <div class="alert position-absolute bottom-0 right-0 z-500" role="alert">
                 <h4 class="alert-heading">Données moyen pour la zone</h4>
-                température : {{ parseFloat(averageTemp).toFixed(2) }} humidité : {{ parseFloat(averageHumid).toFixed(2)
-                }}%
+                {{ isNaN(averageTemp) ? 'aucune donnée': 'température : ' +
+                parseFloat(averageTemp).toFixed(2) +'°C humidité : ' + parseFloat(averageHumid).toFixed(2) + '%'}}
             </div>
         </div>
-    </div>
 
-    <div class="modal" id="modal-station" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <button class="close" data-dismiss="modal" type="button" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h5 class="modal-title">Modal title</h5>
-                <p>
-                    This is the modal content. Almost any type of content can be presented to the user here.
-                </p>
-                <div class="text-right mt-20">
-                    <button class="btn mr-5" data-dismiss="modal" type="button">Close</button>
-                    <button class="btn btn-primary" data-dismiss="modal" type="button">I understand</button>
+        <div class="modal" id="modal-station" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <button class="close" data-dismiss="modal" type="button" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="modal-title"> {{ stationSelected?.place?.street != undefined ?
+                        stationSelected?.place?.street + ', ' : ''}}
+                        {{stationSelected?.place?.city != undefined ?
+                        stationSelected?.place?.city + ', ' : ''}}
+                        {{stationSelected?.place?.country}}</h5>
+
+                    <p class="d-flex justify-content-around">
+                        <span class="badge-group" role="group">
+                            <span class="badge">Altitude</span>
+                            <span class="badge badge-primary">{{ stationSelected?.place?.altitude}}</span>
+                        </span>
+
+                        <span class="badge-group" role="group">
+                            <span class="badge">Pression</span>
+                            <span class="badge badge-primary">{{ stationSelected?.measures?.pression }}
+                                mBar</span>
+                        </span>
+                    </p>
+
+                    <div class="dropdown-divider"></div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="text-center mb-0"><span class="badge w-100">Température</span></p>
+                            <p class="text-center mt-0">
+                                <button class="btn btn-primary w-100" type="button">{{ stationSelected?.measures?.temp
+                                    }}°C</button>
+                            </p>
+
+                        </div>
+                        <div class="col-6">
+                            <p class="text-center mb-0"><span class="badge w-100">Humidité</span></p>
+                            <p class="text-center mt-0">
+                                <button class="btn btn-primary w-100" type="button">{{
+                                    stationSelected?.measures?.humidity }}
+                                    %</button>
+                            </p>
+
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="text-right mt-20">
+                        <button class="btn mr-5 btn-success" data-dismiss="modal" type="button">Fermer</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/halfmoon@1.1.1/js/halfmoon.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
