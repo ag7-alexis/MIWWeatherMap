@@ -229,21 +229,21 @@ var app = new Vue({
       let req = await fetch(url);
       let rep = await req.json();
       await rep.map((place) => {
-        this.villeResult.push({
+        this.villeResult.push({ // add into villeResult array an object
           display_name: place.display_name,
           lat: place.lat,
           lon: place.lon,
-        }); // add into villeResult array an object
+        });
       });
     },
     /**
      * move to the address in the map and add marker
+     * On mobile device, close the sideBar
      * @param {object} Ville
      */
-    moveToAddress: function (ville) {
+    moveToAddress: async function (ville) {
       // Add marker at the address Selectionned (click)
-
-      this.map.flyTo([ville.lat, ville.lon], 16);
+      this.map.setView([ville.lat, ville.lon], 16); // move on map to the lat / lon of the selectedd city
       let icon = L.divIcon({
         className: "custom-div-icon",
         html:
@@ -251,10 +251,24 @@ var app = new Vue({
         iconSize: [40, 42],
         iconAnchor: [15, 42],
       });
+      // new marker with lat and lon data
       let marker = L.marker([ville.lat, ville.lon], { icon: icon }).addTo(
         this.map
       );
-      this.selectedMarkers.push(marker);
+      // remove all markers of the map
+      await this.selectedMarkers.map((marker)=>{
+        this.map.removeLayer(marker);
+      });
+      this.selectedMarkers = []
+      await this.selectedMarkers.push(marker); // add new marker on the map and inside the selectedMarkers array
+      // Test the device
+      let isMobile = window.matchMedia("only screen and (max-width: 768px)").matches;
+      if(isMobile){
+        // if device < 768px
+        // add attribute ("data-sidebar-hidden", "hidden") to hide the sidebar
+        let pageWrapper = document.getElementsByClassName("page-wrapper")[0];
+        pageWrapper.setAttribute("data-sidebar-hidden", "hidden");
+      }
     },
   },
   /**
