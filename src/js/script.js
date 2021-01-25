@@ -79,8 +79,10 @@ var app = new Vue({
       if (pageWrapper) {
         if (pageWrapper.getAttribute("data-sidebar-hidden")) {
           pageWrapper.removeAttribute("data-sidebar-hidden");
+          localStorage.setItem("sidebarOpen", true);
         } else {
           pageWrapper.setAttribute("data-sidebar-hidden", "hidden");
+          localStorage.setItem("sidebarOpen", false);
         }
       }
     },
@@ -210,19 +212,44 @@ var app = new Vue({
         }
       )
         .addTo(this.map)
+        // add popup on marcker clic to display station's data
         .on("click", () => {
-          halfmoon.toggleModal("modal-station");
-        }); //
+          this.stationSelected = {
+            place: station.place,
+            measures: {
+              humidity:
+                station.measures[Object.keys(station.measures)[0]].res[
+                  Object.keys(
+                    station.measures[Object.keys(station.measures)[0]].res
+                  )[0]
+                ][1],
+              temp:
+                station.measures[Object.keys(station.measures)[0]].res[
+                  Object.keys(
+                    station.measures[Object.keys(station.measures)[0]].res
+                  )[0]
+                ][0],
+              pression:
+                station.measures[Object.keys(station.measures)[1]].res[
+                  Object.keys(
+                    station.measures[Object.keys(station.measures)[1]].res
+                  )[0]
+                ][0],
+            },
+          };
+          document.getElementById("modal-station").classList.add("show");
+        });
       this.markers.push(marker);
     },
     /**
      * searching by adress function
      */
     autocomplete: async function () {
+      if (this.search.trim() < 1) return;
       this.villeResult = []; // address array re init
       let url = new URL("https://nominatim.openstreetmap.org/search.php");
       url.search = new URLSearchParams({
-        street: this.search,
+        street: this.search.trim(),
         limit: 10,
         format: "json",
       });
@@ -295,6 +322,32 @@ var app = new Vue({
       ]);
       localStorage.setItem("zoomMap", this.map.getZoom());
     });
+
+    // set bounds to prevent bug on world tour
+    this.map.setMaxBounds(
+      L.latLngBounds(
+        L.latLng(-89.98155760646617, -179),
+        L.latLng(89.99346179538875, 179)
+      )
+    );
+
+    // remove anim on max bounds
+    this.map.on("drag", () => {
+      this.map.panInsideBounds(
+        L.latLngBounds(
+          L.latLng(-89.98155760646617, -179),
+          L.latLng(89.99346179538875, 179)
+        ),
+        { animate: false }
+      );
+    });
+
+    // try to know if sidebar was open
+    localStorage.getItem("sidebarOpen") &&
+      JSON.parse(localStorage.getItem("sidebarOpen")) == true &&
+      document
+        .getElementsByClassName("page-wrapper")[0]
+        .removeAttribute("data-sidebar-hidden");
 
     if (!localStorage.getItem("access_token")) {
       this.updateAccessToken();
