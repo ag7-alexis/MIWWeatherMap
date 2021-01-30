@@ -7,7 +7,7 @@ var app = new Vue({
     search: "",
     villeResult: [],
     refreshToken: "5ff42209e96a29259352e9e5|23970a20e1d8ff67d5b4f7bc06069383",
-    centerMap: [51.505, -0.09],
+    centerMap: [44.5667, 6.0833],
     zoomMap: 10,
     map: undefined,
     markers: [],
