@@ -155,7 +155,7 @@ var app = new Vue({
       url.search = new URLSearchParams({
         limit: 1,
         divider:
-          this.map.getZoom() > 7 ? (this.map.getZoom() > 10 ? 8 : 9) : 10,
+          window.innerWidth > 768 ? (window.innerWidth > 970 ? 10 : 7) : 5,
         zoom: this.map.getZoom(),
         lat_ne: this.map.getBounds()._northEast.lat,
         lon_ne: this.map.getBounds()._northEast.lng,
