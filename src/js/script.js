@@ -44,7 +44,7 @@ var app = new Vue({
      */
     averageTemp: function () {
       let average = 0;
-      this.stations.map((station, i) => {
+      this.stations.map((station) => {
         average +=
           station.measures[Object.keys(station.measures)[0]].res[
             Object.keys(
@@ -59,7 +59,7 @@ var app = new Vue({
      */
     averageHumid: function () {
       let average = 0;
-      this.stations.map((station, i) => {
+      this.stations.map((station) => {
         average +=
           station.measures[Object.keys(station.measures)[0]].res[
             Object.keys(
@@ -153,8 +153,9 @@ var app = new Vue({
       let url = new URL("https://app.netatmo.net/api/getpublicmeasures");
 
       url.search = new URLSearchParams({
-        limit: this.map.getZoom() > 7 ? (this.map.getZoom() > 10 ? 3 : 2) : 1,
-        divider: this.map.getZoom() > 7 ? (this.map.getZoom() > 10 ? 3 : 5) : 8,
+        limit: 1,
+        divider:
+          this.map.getZoom() > 7 ? (this.map.getZoom() > 10 ? 8 : 9) : 10,
         zoom: this.map.getZoom(),
         lat_ne: this.map.getBounds()._northEast.lat,
         lon_ne: this.map.getBounds()._northEast.lng,

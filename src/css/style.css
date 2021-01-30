@@ -129,14 +129,12 @@
 
 body:not(.dark-mode) span.sidebar-link:hover {
   background-color: lightgray;
-  opacity: 80%;
   cursor: pointer;
   border-radius: 15px;
 }
 
 .dark-mode span.sidebar-link:hover {
   background-color: gray;
-  opacity: 90%;
   cursor: pointer;
   border-radius: 15px;
 }
